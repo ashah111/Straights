@@ -11,8 +11,9 @@ class Card {
   Suit suit;
 public:
   Card (int rank, int suit);
-  //~Card();
+  Card ();
   void setRank(Rank rank);
+  void setSuit(Suit rank);
   Suit getSuit() const;
   Rank getRank() const;
   std::string toString() const;

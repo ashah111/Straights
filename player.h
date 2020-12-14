@@ -8,12 +8,19 @@
 
 #include "card.h"
 #include "table.h"
+#include "subject.h"
+#include "observer.h"
+#include "info.h"
 
-class Player {
+enum PLAYER_TYPE {HUMAN = 1, COMPUTER = 2, NONE = 3};
+
+class Player : public Subject{
   std::vector<std::shared_ptr<Card>> hand;
   std::vector<std::shared_ptr<Card>> discardPile;
+  std::vector<std::shared_ptr<Card>> legalPlays;
   int score;
   int scoreGained;
+  std::shared_ptr<Card> currentPlay;
 public:
   Player();
 
@@ -24,18 +31,21 @@ public:
 
   std::vector<std::shared_ptr<Card>> getHand();
   std::vector<std::shared_ptr<Card>> getDiscardPile();
+  std::vector<std::shared_ptr<Card>> getLegalPlays();
   int getScore();
   int getScoreGained();
 
-  std::string playerType();
+  virtual PLAYER_TYPE playerType() const = 0;
   void reset();
-  std::vector<std::shared_ptr<Card>> legalPlays(Table table);
+  void calculateLegalPlays(Table table);
   void cardsToString(std::vector<std::shared_ptr<Card>>);
 
-  int findCard(std::string rank, std::string suit, std::vector<std::shared_ptr<Card>> cards);
-  int findCard(Card* card, std::vector<std::shared_ptr<Card>> cards);
-  void discardCard(std::string card);
-  Card* playCard(std::string, std::vector<std::shared_ptr<Card>>);
+  int findCard(std::shared_ptr<Card> card,std::vector<std::shared_ptr<Card>> cards);
+  void discardCard(int idx);
+  void playCard(int idx);
+
+  virtual Info getInfo() const override;
+
 
 };
 

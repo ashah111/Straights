@@ -7,6 +7,8 @@ using namespace std;
 
 Card::Card (int r, int s) : rank {Rank(r)}, suit {Suit(s)} {}
 
+Card::Card () {}
+
 Suit Card::getSuit() const{
   return suit;
 }
@@ -16,7 +18,13 @@ Rank Card::getRank() const{
 }
 
 void Card::setRank(Rank r){
+  cout <<"break setRank" << endl;
   rank = r;
+}
+
+void Card::setSuit(Suit s){
+  cout <<"break setSuit" << endl;
+  suit = s;
 }
 
 string Card::toString() const{

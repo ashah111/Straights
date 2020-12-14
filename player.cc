@@ -35,6 +35,10 @@ vector<shared_ptr<Card>> Player::getDiscardPile(){
   return discardPile;
 }
 
+vector<shared_ptr<Card>> Player::getLegalPlays(){
+  return legalPlays;
+}
+
 int Player::getScore(){
   return score;
 }
@@ -53,59 +57,29 @@ void Player::updateScore(int newScore){
   score += newScore;
 }
 
-Card* Player::playCard(string card, vector<shared_ptr<Card>> legalPlays){
-  int idx;
-  string rank,suit;
-  if (card.length() > 0){
-    if (card.length() != 2) throw InvalidValueException(); // return error
-    rank = card.substr(0,1);
-    suit = card.substr(1,1);
-
-    idx = findCard(rank,suit,legalPlays);
-    if (idx == -1) throw InvalidValueException();
-  }else {
-
-  }
-    idx = findCard(rank,suit,hand);
-
-
-  Card * ret = hand[idx].get();
+void Player::playCard(int idx){
+  currentPlay = hand[idx];
+  notifyObservers();
   hand.erase(hand.begin() + idx);
-  return ret;
 }
 
-void Player::discardCard(string card){
-  if (card.length() != 2) return; // return error
-  string rank = card.substr(0,1);
-  string suit = card.substr(1,1);
-
-  int idx = findCard(rank,suit,hand);
-  if (idx == -1) return; //ERROR
+void Player::discardCard(int idx){
   scoreGained+=hand[idx]->getRank();
   discardPile.push_back(move(hand[idx]));
   hand.erase(hand.begin() + idx);
 }
 
-int Player::findCard(string rank, string suit, vector<shared_ptr<Card>> cards){
+int Player::findCard(shared_ptr<Card> card, vector<shared_ptr<Card>> cards){
   auto found = find_if(cards.begin(), cards.end(), [&](shared_ptr<Card>& p){
-    return (p->rankToString() == rank && p->suitToString() == suit);
+    return (p.get() == card.get());
   });
   if(found == cards.end()) { return -1; }
-  int idx = distance(hand.begin(), found);
+  int idx = distance(cards.begin(), found);
   return idx;
 }
 
-int Player::findCard(Card *card, vector<shared_ptr<Card>> cards){
-  auto found = find_if(cards.begin(), cards.end(), [&](shared_ptr<Card>& p){
-    return (p.get() == card);
-  });
-  if(found == cards.end()) { return -1; }
-  int idx = distance(hand.begin(), found);
-  return idx;
-}
-
-vector<shared_ptr<Card>> Player::legalPlays(Table table){
-  vector<shared_ptr<Card>> legalPlays;
+void Player::calculateLegalPlays(Table table){
+  legalPlays.clear();
   for(int i = 0 ; i < hand.size(); i++){
     Rank rank = hand[i]->getRank();
     Suit suit = hand[i]->getSuit();
@@ -118,27 +92,17 @@ vector<shared_ptr<Card>> Player::legalPlays(Table table){
       }
     }
   }
-
-  return legalPlays;
 }
 
 void Player::cardsToString(vector<shared_ptr<Card>> cards){
   for (int i = 0 ; i < cards.size(); i++){
-    //cout << " " << cards[i]->toString();
-    cout << i << endl;
+    cout << " " << cards[i]->toString();
   }
   cout << endl;
 }
 
-string Player::playerType(){return "";}
-
-
-
-
-
-
-
-
-
-
-//asdsa
+Info Player::getInfo() const {
+  Info i = {};
+  i.card = move(currentPlay);
+  return i;
+}

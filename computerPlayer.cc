@@ -17,18 +17,15 @@ ComputerPlayer::ComputerPlayer( Player& humanPlayer ){
   setScore(humanPlayer.getScore());
 }
 
-string ComputerPlayer::playerType(){
-  return "computer";
+PLAYER_TYPE ComputerPlayer::playerType() const{
+  return COMPUTER;
 }
 
-void ComputerPlayer::play(){
-  // //Get legal plays
-  // vector<shared_ptr<Card>> legalPlays = legalPlays();
-  // //if legalPlays >= 1 - play card
-  // if (legalPlays.size() > 0){
-  //
-  // }else{
-  //   discardCard
-  // }
-
+void ComputerPlayer::play() {
+  if (getLegalPlays().size() == 0){
+    discardCard(0);
+  }else {
+    int idx = findCard(getLegalPlays()[0],getHand());
+    playCard(idx);
+  }
 }

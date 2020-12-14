@@ -4,8 +4,10 @@
 #include <vector>
 #include <string>
 #include "card.h"
+#include "subject.h"
+#include "observer.h"
 
-class Table {
+class Table : public Observer{
   std::vector<std::vector<std::shared_ptr<Card>>> table;
 public:
   Table();
@@ -15,6 +17,7 @@ public:
   void printTable();
   void addCard(std::shared_ptr<Card> card);
   void clearTable();
+  void notify( Subject & whoNotified ) override;
 };
 
 #endif

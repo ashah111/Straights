@@ -4,6 +4,7 @@
 #include <string>
 #include "card.h"
 #include "table.h"
+#include "player.h"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ Table::Table(){
     k.emplace_back(make_shared<Card>(0,i));
     table.emplace_back(k);
   }
+
 }
 
 Table::~Table(){}
@@ -39,22 +41,23 @@ void Table::printTable(){
 }
 
 void Table::addCard(shared_ptr<Card> card){
-  //maybe this should observe all the players to see if they play a cards
   int suit = card->getSuit();
   int rank = card->getRank();
 
-  if (table[suit][0]->getRank() == 0){ //Add a new 7, there's no error checking here, that must be done where called
-    table[suit][0]->setRank(SEVEN);
+  cout << "count=" << card.use_count() << endl;
+  if (table[suit][0]->getRank() == 0){
+    table[suit].clear();
+    table[suit].push_back(move(card));
   }else{
     int l = table[suit].size();
     if (rank < table[suit][0]->getRank()) {
-      table[suit].insert(table[suit].begin(),card);
+      table[suit].insert(table[suit].begin(),move(card));
     }
     else if (rank > table[suit][l-1]->getRank()){
-      table[suit].push_back(card);
+      table[suit].push_back(move(card));
     }
   }
-
+  
 }
 
 void Table::clearTable(){
@@ -62,4 +65,17 @@ void Table::clearTable(){
     table[i].clear();
   }
   table.clear();
+
+  for (int i = 0; i < 4 ; i++){
+    vector<shared_ptr<Card>> k;
+    k.emplace_back(make_shared<Card>(0,i));
+    table.emplace_back(k);
+  }
+
+}
+
+void Table::notify(Subject & whoNotified){
+  Info i = whoNotified.getInfo();
+  addCard(i.card);
+
 }

@@ -8,7 +8,10 @@
 class HumanPlayer : public Player {
 public:
   HumanPlayer();
-  std::string playerType();
+  virtual PLAYER_TYPE playerType() const override;
+
+  void play(std::string input);
+  void discard(std::string input);
 };
 
 #endif

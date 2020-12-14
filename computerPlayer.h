@@ -9,8 +9,7 @@ class ComputerPlayer : public Player {
 public:
   ComputerPlayer();
   ComputerPlayer( Player& humanPlayer );
-
-  std::string playerType();
+  virtual PLAYER_TYPE playerType() const override;
   void play();
 };
 

@@ -13,6 +13,7 @@ Game::Game(unsigned seed): deck{Deck{seed}}, table{Table{}}, firstPlayer{0}, cur
     cout << "Is Player" << i+1 << " a human (h) or a computer (c)?" << endl << ">";
     try{
         addPlayer();
+
     }catch (InvalidValueException &i) {
         cerr << "sampleTextUIStraights: GameLogic.cc:34: void GameLogic::enterPlayers(): Assertion `c == 'h' || c == 'c'' failed.";
         exit(0);
@@ -26,10 +27,14 @@ void Game::addPlayer(){
 
   while (getline(cin, type)){
     if (type == "h"){
-      players.emplace_back(make_shared<HumanPlayer>());
+      shared_ptr<Player> p = make_shared<HumanPlayer>();
+      p->attach(&table);
+      players.emplace_back(p);
       return;
     } else if (type == "c"){
-      players.emplace_back(make_shared<ComputerPlayer>());
+      shared_ptr<Player> p = make_shared<ComputerPlayer>();
+      p->attach(&table);
+      players.emplace_back(p);
       return;
     } else if (type.find_first_not_of(' ') == std::string::npos){}
     else throw InvalidValueException();
@@ -70,7 +75,7 @@ void Game::beginRound(){
   table.clearTable();
   for ( int i=0 ; i<PLAYER_COUNT ; i++ ){
     players[i]->reset();
-    if (players[i]->setHand(deck.getHand(i*13, i*13+12)) == 1){
+    if (players[i]->setHand(deck.getHand(i*13, i*13+13)) == 1){
       firstPlayer = i;
       currentPlayer = i;
     }
@@ -87,14 +92,12 @@ void Game::takeTurn(){
   cout << "Your hand:";
   players[currentPlayer]->cardsToString(players[currentPlayer]->getHand());
   cout << "Legal plays:";
-  vector<shared_ptr<Card>> legal = players[currentPlayer]->legalPlays(table);
-  players[currentPlayer]->cardsToString(legal);
+  players[currentPlayer]->calculateLegalPlays(table);
+  players[currentPlayer]->cardsToString(players[currentPlayer]->getLegalPlays());
 
-  if (players[currentPlayer]->playerType() == "computer"){
-    if (legal.size() > 0){
-        players[currentPlayer]->playCard("",legal);
-    }
-  }else{ //humanPlayer
+  if (players[currentPlayer]->playerType() == COMPUTER){
+    (dynamic_pointer_cast<ComputerPlayer>(players[currentPlayer]))->play();
+  }else{
     string s;
     cout << ">";
     while (std::getline(std::cin, s)) {
@@ -103,29 +106,24 @@ void Game::takeTurn(){
         iss >> cmd;
 
         if (cmd == "play"){
-          cout << "cmd::play" << endl;
           iss >> cmd;
           try {
-              players[currentPlayer]->playCard(cmd,legal);
+              (dynamic_pointer_cast<HumanPlayer>(players[currentPlayer]))->play(cmd);
               return;
-          } catch (InvalidValueException &i) {
-              cout << "This is not a legal play." << endl;
-          }
+          } catch (InvalidValueException &i) {cout << "This is not a legal play." << endl << ">";}
         }else if (cmd == "discard"){
-          cout << "cmd::discard" << endl;
-          if (legal.size() > 0){
-            cout << "You have a legal play. You may not discard" << endl;
+          if (players[currentPlayer]->getLegalPlays().size() > 0){
+            cout << "You have a legal play. You may not discard" << endl << ">";
           }else{
             iss >> cmd;
             try {
-                players[currentPlayer]->discardCard(cmd);
+                (dynamic_pointer_cast<HumanPlayer>(players[currentPlayer]))->discard(cmd);
                 return;
             } catch (InvalidValueException &i) {
                 cout << "This is not a legal play." << endl;
             }
           }
         }else if (cmd == "deck"){
-          cout << "cmd::deck" << endl;
           deck.printDeck();
           cout << ">";
         }else if (cmd == "ragequit"){
@@ -142,12 +140,12 @@ void Game::takeTurn(){
 }
 
 void Game::rageQuit(shared_ptr<Player> player){
-  auto found = find_if(players.begin(), players.end(), [&](shared_ptr<Player>& p){
-    return (p == player);
-  });
-
-  if(found == players.end()) { return; }
-  int idx = distance(players.begin(), found);
+  // auto found = find_if(players.begin(), players.end(), [&](shared_ptr<Player>& p){
+  //   return (p == player);
+  // });
+  //
+  // if(found == players.end()) { return; }
+  // int idx = distance(players.begin(), found);
 
   //players.emplace_back(make_shared<ComputerPlayer>(player.get()));
   //players.erase(players.begin() + idx);
