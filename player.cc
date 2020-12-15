@@ -24,7 +24,11 @@ void Player::setDiscardPile(vector<shared_ptr<Card>> newDiscard){
 }
 
 void Player::setScore(int n){
-  score = 0;
+  score = n;
+}
+
+void Player::setScoreGained(int n){
+  scoreGained = n;
 }
 
 vector<shared_ptr<Card>> Player::getHand(){
@@ -71,7 +75,7 @@ void Player::discardCard(int idx){
 
 int Player::findCard(shared_ptr<Card> card, vector<shared_ptr<Card>> cards){
   auto found = find_if(cards.begin(), cards.end(), [&](shared_ptr<Card>& p){
-    return (p.get() == card.get());
+    return (p->getRank() == card->getRank() && p->getSuit() == card->getSuit());
   });
   if(found == cards.end()) { return -1; }
   int idx = distance(cards.begin(), found);

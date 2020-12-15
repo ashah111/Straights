@@ -37,6 +37,8 @@ public:
   void addPlayer();
   bool roundOver();
   bool gameOver();
+
+  void currentStats();
   void printWinners();
 
 };

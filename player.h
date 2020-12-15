@@ -27,6 +27,7 @@ public:
   int setHand(std::vector<std::shared_ptr<Card>> hand);
   void setDiscardPile(std::vector<std::shared_ptr<Card>> discardPile);
   void setScore(int);
+  void setScoreGained(int);
   void updateScore(int newScore);
 
   std::vector<std::shared_ptr<Card>> getHand();

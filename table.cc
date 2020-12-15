@@ -44,7 +44,6 @@ void Table::addCard(shared_ptr<Card> card){
   int suit = card->getSuit();
   int rank = card->getRank();
 
-  cout << "count=" << card.use_count() << endl;
   if (table[suit][0]->getRank() == 0){
     table[suit].clear();
     table[suit].push_back(move(card));
@@ -57,7 +56,7 @@ void Table::addCard(shared_ptr<Card> card){
       table[suit].push_back(move(card));
     }
   }
-  
+
 }
 
 void Table::clearTable(){

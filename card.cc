@@ -9,6 +9,8 @@ Card::Card (int r, int s) : rank {Rank(r)}, suit {Suit(s)} {}
 
 Card::Card () {}
 
+Card::Card (string r, string s) : rank {stringToRank(r)}, suit {stringToSuit(s)} {}
+
 Suit Card::getSuit() const{
   return suit;
 }
@@ -18,13 +20,12 @@ Rank Card::getRank() const{
 }
 
 void Card::setRank(Rank r){
-  cout <<"break setRank" << endl;
   rank = r;
+  cout  << " here2 /n" << endl;
 }
 
-void Card::setSuit(Suit s){
-  cout <<"break setSuit" << endl;
-  suit = s;
+void Card::setSuit(int s){
+  suit = Suit(s);
 }
 
 string Card::toString() const{
@@ -42,7 +43,7 @@ string Card::rankToString() const{
     case 7: return "7";
     case 8: return "8";
     case 9: return "9";
-    case 10: return "10";
+    case 10: return "T";
     case 11: return "J";
     case 12: return "Q";
     case 13: return "K";
@@ -58,6 +59,31 @@ string Card::suitToString() const{
     case DIAMONDS: return "D";
     default : return "";
   }
+}
+
+Rank Card::stringToRank(string input) const{
+  if (input == "A") return ACE;
+  else if (input == "2") return TWO;
+  else if (input == "3") return THREE;
+  else if (input == "4") return FOUR;
+  else if (input == "5") return FIVE;
+  else if (input == "6") return SIX;
+  else if (input == "7") return SEVEN;
+  else if (input == "8") return EIGHT;
+  else if (input == "9") return NINE;
+  else if (input == "T") return TEN;
+  else if (input == "J") return JACK;
+  else if (input == "Q") return QUEEN;
+  else if (input == "K") return KING;
+  else return X;
+}
+
+Suit Card::stringToSuit(string input) const{
+  if (input == "S") return SPADES;
+  else if (input == "D") return DIAMONDS;
+  else if (input == "C") return CLUBS;
+  else if (input == "H") return HEARTS;
+  else return SPADES;
 }
 
 bool operator==(const Card &a, const Card &b){

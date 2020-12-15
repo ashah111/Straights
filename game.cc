@@ -58,8 +58,12 @@ void Game::getNextPlayer(){
 void Game::start(){
   while (!gameOver()){
     beginRound();
+    currentStats();
   }
+  printWinners();
+}
 
+void Game::currentStats(){
   for (int i = 0 ; i < PLAYER_COUNT ; i++){
     cout << "Player" << (i+1) << "'s discards:";
     players[i]->cardsToString(players[i]->getDiscardPile());
@@ -67,7 +71,6 @@ void Game::start(){
     players[i]->updateScore(players[i]->getScoreGained());
     cout << players[i]->getScore() << endl;
   }
-  printWinners();
 }
 
 void Game::beginRound(){
@@ -85,6 +88,7 @@ void Game::beginRound(){
     takeTurn();
     getNextPlayer();
   }
+
 }
 
 void Game::takeTurn(){
@@ -96,6 +100,7 @@ void Game::takeTurn(){
   players[currentPlayer]->cardsToString(players[currentPlayer]->getLegalPlays());
 
   if (players[currentPlayer]->playerType() == COMPUTER){
+    cout << "Player" << currentPlayer+1 << " ";
     (dynamic_pointer_cast<ComputerPlayer>(players[currentPlayer]))->play();
   }else{
     string s;
@@ -127,9 +132,11 @@ void Game::takeTurn(){
           deck.printDeck();
           cout << ">";
         }else if (cmd == "ragequit"){
-          rageQuit(players[currentPlayer]);
           cout << "Player" << currentPlayer+1 << "ragequits. A computer will now take over" << endl;
+          rageQuit(players[currentPlayer]);
         }else if (cmd == "quit"){
+          currentStats();
+          printWinners();
           exit(0);
         }else {
           cout << "Invalid command: '" << cmd << "'" << endl;
@@ -140,15 +147,15 @@ void Game::takeTurn(){
 }
 
 void Game::rageQuit(shared_ptr<Player> player){
-  // auto found = find_if(players.begin(), players.end(), [&](shared_ptr<Player>& p){
-  //   return (p == player);
-  // });
-  //
-  // if(found == players.end()) { return; }
-  // int idx = distance(players.begin(), found);
+  auto found = find_if(players.begin(), players.end(), [&](shared_ptr<Player>& p){
+    return (p == player);
+  });
 
-  //players.emplace_back(make_shared<ComputerPlayer>(player.get()));
-  //players.erase(players.begin() + idx);
+  if(found == players.end()) { return; }
+  //int idx = distance(players.begin(), found);
+  //shared_ptr<ComputerPlayer> comp = make_shared<ComputerPlayer>(&player);
+  //players.emplace_back(make_shared<ComputerPlayer>(player));
+  // players.erase(players.begin() + idx);
 }
 
 bool Game::roundOver(){

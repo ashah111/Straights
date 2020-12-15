@@ -12,13 +12,17 @@ class Card {
 public:
   Card (int rank, int suit);
   Card ();
+  Card (std::string rank, std::string suit);
   void setRank(Rank rank);
-  void setSuit(Suit rank);
+  void setSuit(int suit);
   Suit getSuit() const;
   Rank getRank() const;
   std::string toString() const;
+
   std::string rankToString() const;
   std::string suitToString() const;
+  Rank stringToRank(std::string input) const;
+  Suit stringToSuit(std::string input) const;
 };
 
 bool operator==(const Card &, const Card &);
