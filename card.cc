@@ -21,7 +21,6 @@ Rank Card::getRank() const{
 
 void Card::setRank(Rank r){
   rank = r;
-  cout  << " here2 /n" << endl;
 }
 
 void Card::setSuit(int s){
@@ -83,7 +82,7 @@ Suit Card::stringToSuit(string input) const{
   else if (input == "D") return DIAMONDS;
   else if (input == "C") return CLUBS;
   else if (input == "H") return HEARTS;
-  else return SPADES;
+  else return OTHER;
 }
 
 bool operator==(const Card &a, const Card &b){

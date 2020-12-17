@@ -10,7 +10,6 @@ class Deck {
 public:
   Deck();
   Deck(unsigned seed);
-  //~Deck();
 
   void shuffle();
   std::vector<std::shared_ptr<Card>> getHand(int start, int finish);

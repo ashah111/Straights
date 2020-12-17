@@ -13,7 +13,7 @@ Player::Player():score{0}, scoreGained{0}{}
 int Player::setHand(vector<shared_ptr<Card>> newHand){
   hand = newHand;
   auto found = find_if(newHand.begin(), newHand.end(), [&](shared_ptr<Card>& p){
-    return (p->getRank() == 7 && p->getSuit() == SPADES);
+    return (p->getRank() == START_RANK && p->getSuit() == START_SUIT);
   });
   if (found != newHand.end()) return 1;
   return -1;
@@ -43,7 +43,7 @@ vector<shared_ptr<Card>> Player::getLegalPlays(){
   return legalPlays;
 }
 
-int Player::getScore(){
+int Player::getScore() const{
   return score;
 }
 
@@ -109,4 +109,9 @@ Info Player::getInfo() const {
   Info i = {};
   i.card = move(currentPlay);
   return i;
+}
+
+bool operator<(const Player &a, const Player &b){
+  if (a.getScore() < b.getScore()) return true;
+  return false;
 }

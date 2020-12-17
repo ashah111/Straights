@@ -9,7 +9,7 @@
 using namespace std;
 
 Table::Table(){
-  for (int i = 0; i < 4 ; i++){
+  for (int i = 0; i < NUM_SUIT ; i++){
     vector<shared_ptr<Card>> k;
     k.emplace_back(make_shared<Card>(0,i));
     table.emplace_back(k);
@@ -25,7 +25,7 @@ vector<vector<shared_ptr<Card>>> Table::getTable(){
 
 void Table::printTable(){
   cout << "Cards on the table:" << endl;
-  for (int i = 0; i < 4 ; i++){
+  for (int i = 0; i < NUM_SUIT ; i++){
     switch (i){
       case 0: cout << "Clubs: "; break;
       case 1: cout << "Diamonds: "; break;
@@ -65,7 +65,7 @@ void Table::clearTable(){
   }
   table.clear();
 
-  for (int i = 0; i < 4 ; i++){
+  for (int i = 0; i < NUM_SUIT ; i++){
     vector<shared_ptr<Card>> k;
     k.emplace_back(make_shared<Card>(0,i));
     table.emplace_back(k);

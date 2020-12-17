@@ -21,6 +21,9 @@ class Game {
   int currentPlayer;
 
   static const int PLAYER_COUNT = 4;
+  static const int SCORE_TO_END = 80;
+
+  static bool scoreSort(std::shared_ptr<Player>, std::shared_ptr<Player>);
 public:
   Game(unsigned seed);
   ~Game();
@@ -32,6 +35,7 @@ public:
   void start();
   void beginRound();
   void takeTurn();
+  void printTurn();
 
   void rageQuit(std::shared_ptr<Player> player);
   void addPlayer();

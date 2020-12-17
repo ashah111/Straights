@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-enum Suit {SPADES = 3, HEARTS = 2, DIAMONDS = 1, CLUBS = 0 };
+enum Suit {OTHER = 0, SPADES = 3, HEARTS = 2, DIAMONDS = 1, CLUBS = 0 };
 enum Rank { X = 0, ACE = 1, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING};
 
 class Card {
@@ -28,7 +28,5 @@ public:
 bool operator==(const Card &, const Card &);
 bool operator<(const Card &, const Card &);
 bool operator>(const Card &, const Card &);
-// std::ostream &operator<<(std::ostream &, const Card &);
-// std::istream &operator>>(std::istream &, Card &);
 
 #endif

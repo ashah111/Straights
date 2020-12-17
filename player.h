@@ -15,6 +15,9 @@
 enum PLAYER_TYPE {HUMAN = 1, COMPUTER = 2, NONE = 3};
 
 class Player : public Subject{
+  static const Rank START_RANK = SEVEN;
+  static const Suit START_SUIT = SPADES;
+
   std::vector<std::shared_ptr<Card>> hand;
   std::vector<std::shared_ptr<Card>> discardPile;
   std::vector<std::shared_ptr<Card>> legalPlays;
@@ -33,7 +36,7 @@ public:
   std::vector<std::shared_ptr<Card>> getHand();
   std::vector<std::shared_ptr<Card>> getDiscardPile();
   std::vector<std::shared_ptr<Card>> getLegalPlays();
-  int getScore();
+  int getScore() const;
   int getScoreGained();
 
   virtual PLAYER_TYPE playerType() const = 0;
@@ -47,8 +50,9 @@ public:
 
   virtual Info getInfo() const override;
 
-
 };
+
+bool operator<(const Player &, const Player &);
 
 class InvalidValueException {};
 

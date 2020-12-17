@@ -8,6 +8,8 @@
 #include "observer.h"
 
 class Table : public Observer{
+  static const int NUM_RANK = 13;
+  static const int NUM_SUIT = 4;
   std::vector<std::vector<std::shared_ptr<Card>>> table;
 public:
   Table();

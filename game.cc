@@ -91,13 +91,17 @@ void Game::beginRound(){
 
 }
 
-void Game::takeTurn(){
+void Game::printTurn(){
   table.printTable();
   cout << "Your hand:";
   players[currentPlayer]->cardsToString(players[currentPlayer]->getHand());
   cout << "Legal plays:";
-  players[currentPlayer]->calculateLegalPlays(table);
   players[currentPlayer]->cardsToString(players[currentPlayer]->getLegalPlays());
+}
+
+void Game::takeTurn(){
+  players[currentPlayer]->calculateLegalPlays(table);
+  printTurn();
 
   if (players[currentPlayer]->playerType() == COMPUTER){
     cout << "Player" << currentPlayer+1 << " ";
@@ -131,9 +135,6 @@ void Game::takeTurn(){
         }else if (cmd == "deck"){
           deck.printDeck();
           cout << ">";
-        }else if (cmd == "ragequit"){
-          cout << "Player" << currentPlayer+1 << "ragequits. A computer will now take over" << endl;
-          rageQuit(players[currentPlayer]);
         }else if (cmd == "quit"){
           currentStats();
           printWinners();
@@ -147,15 +148,6 @@ void Game::takeTurn(){
 }
 
 void Game::rageQuit(shared_ptr<Player> player){
-  auto found = find_if(players.begin(), players.end(), [&](shared_ptr<Player>& p){
-    return (p == player);
-  });
-
-  if(found == players.end()) { return; }
-  //int idx = distance(players.begin(), found);
-  //shared_ptr<ComputerPlayer> comp = make_shared<ComputerPlayer>(&player);
-  //players.emplace_back(make_shared<ComputerPlayer>(player));
-  // players.erase(players.begin() + idx);
 }
 
 bool Game::roundOver(){
@@ -169,20 +161,24 @@ bool Game::roundOver(){
 
 bool Game::gameOver(){
   for (int i = 0; i < PLAYER_COUNT ; i++){
-    if (players[i]->getScore() >= 80) return true;
+    if (players[i]->getScore() >= SCORE_TO_END) return true;
   }
   return false;
 }
 
+bool Game::scoreSort(shared_ptr<Player> one, shared_ptr<Player> two) {
+  return (*(one.get()) < *(two.get()));
+}
+
+
 void Game::printWinners(){
-  vector<int> scores = {0,0,0,0};
+  int winningScore = 10000;
   for (int i = 0; i < PLAYER_COUNT; i++){
-    scores[i] = players[i]->getScore();
+    if (players[i]->getScore() < winningScore) winningScore = players[i]->getScore();
   }
-  sort(scores.begin(),scores.end());
-  int winningScore = scores[0];
+
   for (int i = 0; i < PLAYER_COUNT; i++){
-    if (scores[i] == winningScore) cout << "Player" << i+1 << " wins!" << endl;
+    if (players[i]->getScore() == winningScore) cout << "Player" << i+1 << " wins!" << endl;
   }
 
 }
